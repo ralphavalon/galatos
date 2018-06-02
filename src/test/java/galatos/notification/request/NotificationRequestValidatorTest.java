@@ -98,6 +98,20 @@ public class NotificationRequestValidatorTest {
 	}
 	
 	@Test
+	public void whenHasNoDefaultTextAndInnerDoesntHaveTextButHaveOtherRequiredParams_thenShouldNotBeValid() {
+		NotificationRequest request = NotificationRequest.builder()
+				.slack(SlackRequest.builder()
+						.urls(Arrays.asList("asd"))
+						.build())
+				.build();
+		List<ObjectError> errors = validate(request);
+		assertThat(errors.size()).isEqualTo(1);
+		
+		ObjectError error = errors.get(0);
+		assertThat(error.getCode()).isEqualTo("ShouldHaveText");
+	}
+	
+	@Test
 	public void whenHasNoDefaultTextAndInnerDoesntHaveRequiredParams_thenShouldNotBeValid() {
 		NotificationRequest request = NotificationRequest.builder()
 				.slack(SlackRequest.builder()

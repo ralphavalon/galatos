@@ -2,11 +2,8 @@ package galatos.notification.request;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.ClassUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -32,14 +29,10 @@ public class NotificationRequestValidator implements Validator {
 		validator.validate(target, errors);
 		
 		if(isBlank(request.getText())) {
-			List<Field> fields = Arrays.asList(request.getClass().getDeclaredFields());
-			
-			fields.stream()
-				.filter(field -> ClassUtils.isAssignable(field.getType(), DestinationRequest.class)
-					&& isBlank(
-						((DestinationRequest) FieldHelper.getField(field, request)).getText())
-					)
-				.forEach(field -> errors.rejectValue(field.getName(), "ShouldHaveText", "se tiver, esta"));
+			List<DestinationRequest> destinationRequests = request.getDestinationRequests();
+			destinationRequests.stream()
+				.filter(destination -> isBlank(destination.getText()))
+				.forEach(destination -> errors.rejectValue(FieldHelper.getFieldName(destination, request), "ShouldHaveText", "se tiver, esta"));
 		}
 
 	}
