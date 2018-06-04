@@ -1,6 +1,7 @@
 package galatos.notification.listener;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -16,6 +17,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import galatos.notification.destination.DestinationRequest;
+import galatos.notification.destination.DestinationServiceFactory;
 import galatos.notification.request.NotificationRequest;
 
 @Component
@@ -39,6 +42,14 @@ public class RabbitMQListener {
 		NotificationRequest notificationRequest = mapper.readValue(message, NotificationRequest.class);
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(notificationRequest, NotificationRequest.class.getSimpleName());
 		requestValidator.validate(notificationRequest, errors);
-		System.out.println(errors.getAllErrors());
+		if(errors.hasErrors()) {
+			throw new RuntimeException();
+		}
+		
+		List<DestinationRequest> destinationRequests = notificationRequest.getDestinationRequests();
+		destinationRequests.parallelStream()
+			.forEach(destinationRequest -> DestinationServiceFactory.getNotificationService(
+					destinationRequest.getType()).notify(notificationRequest));
+		
 	}
 }

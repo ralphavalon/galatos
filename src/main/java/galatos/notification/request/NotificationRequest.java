@@ -9,6 +9,8 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.ClassUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import galatos.notification.destination.DestinationRequest;
 import galatos.notification.destination.slack.SlackRequest;
 import galatos.notification.validation.AtLeastOneNotNull;
@@ -26,6 +28,7 @@ public class NotificationRequest {
 	@Valid
 	private SlackRequest slack;
 	
+	@JsonIgnore
 	public List<DestinationRequest> getDestinationRequests() {
 		List<Field> fields = Arrays.asList(this.getClass().getDeclaredFields());
 		

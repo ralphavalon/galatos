@@ -13,8 +13,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -23,11 +25,14 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import galatos.notification.destination.DestinationServiceFactory;
 import galatos.notification.destination.slack.SlackRequest;
 import galatos.notification.request.NotificationRequest;
+import galatos.notification.service.NotificationService;
+import galatos.notification.stub.TestNotificationService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes= {RabbitMQListener.class})
+@SpringBootTest(classes= {RabbitMQListener.class, DestinationServiceFactory.class})
 @SuppressWarnings("unchecked")
 public class RabbitMQListenerTest {
 	
@@ -39,7 +44,19 @@ public class RabbitMQListenerTest {
 	private ObjectMapper mapper;
 	
 	@SpyBean
+	private TestNotificationService notificationService;
+	
+	@SpyBean
 	private RabbitMQListener listener;
+	
+	@TestConfiguration
+	public class TestConfig {
+		
+		@Bean
+		public NotificationService notificationService() {
+			return new TestNotificationService();
+		}
+	}
 	
 	@Test
 	public void whenPassesRightClass_thenShouldSupport() throws JsonParseException, JsonMappingException, IOException {
@@ -62,6 +79,7 @@ public class RabbitMQListenerTest {
 		}
 		
 		verify(requestValidator, times(1)).validate(any(NotificationRequest.class), any(Errors.class));
+		verify(notificationService, times(1)).notify(any(NotificationRequest.class));
 	}
 	
 }

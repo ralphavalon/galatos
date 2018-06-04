@@ -5,7 +5,10 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import galatos.notification.destination.DestinationRequest;
+import galatos.notification.destination.DestinationType;
 import galatos.notification.validation.NotBlankFields;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +23,10 @@ public class SlackRequest implements DestinationRequest {
 	@NotBlankFields
 	private List<String> urls;
 	private String text;
+	
+	@Override @JsonIgnore
+	public DestinationType getType() {
+		return DestinationType.SLACK;
+	}
 	
 }
