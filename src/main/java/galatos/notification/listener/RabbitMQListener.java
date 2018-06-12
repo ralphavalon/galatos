@@ -48,7 +48,7 @@ public class RabbitMQListener {
 		
 		List<DestinationRequest> destinationRequests = notificationRequest.getDestinationRequests();
 		destinationRequests.parallelStream()
-			.forEach(destinationRequest -> DestinationServiceFactory.getNotificationService(
+			.forEach(destinationRequest -> DestinationServiceFactory.getDestinationService(
 					destinationRequest.getType()).notify(notificationRequest));
 		
 	}

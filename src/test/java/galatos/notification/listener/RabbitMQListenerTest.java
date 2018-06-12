@@ -25,10 +25,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import galatos.notification.destination.DestinationService;
 import galatos.notification.destination.DestinationServiceFactory;
 import galatos.notification.destination.slack.SlackRequest;
 import galatos.notification.request.NotificationRequest;
-import galatos.notification.service.NotificationService;
 import galatos.notification.stub.TestNotificationService;
 
 @RunWith(SpringRunner.class)
@@ -53,7 +53,7 @@ public class RabbitMQListenerTest {
 	public class TestConfig {
 		
 		@Bean
-		public NotificationService notificationService() {
+		public DestinationService destinationService() {
 			return new TestNotificationService();
 		}
 	}

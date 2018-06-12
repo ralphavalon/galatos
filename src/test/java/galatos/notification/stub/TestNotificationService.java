@@ -2,12 +2,12 @@ package galatos.notification.stub;
 
 import org.springframework.stereotype.Service;
 
+import galatos.notification.destination.DestinationService;
 import galatos.notification.destination.DestinationType;
 import galatos.notification.request.NotificationRequest;
-import galatos.notification.service.NotificationService;
 
 @Service
-public class TestNotificationService implements NotificationService {
+public class TestNotificationService implements DestinationService {
 
 	@Override
 	public void notify(NotificationRequest request) {

@@ -1,9 +1,8 @@
-package galatos.notification.service;
+package galatos.notification.destination;
 
-import galatos.notification.destination.DestinationType;
 import galatos.notification.request.NotificationRequest;
 
-public interface NotificationService {
+public interface DestinationService {
 	
 	void notify(NotificationRequest request);
 	
