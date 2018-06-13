@@ -13,22 +13,22 @@ import galatos.notification.exception.DestinationServiceNotFound;
 
 @Service
 public class DestinationServiceFactory {
-	
+
 	@Autowired
-    private List<DestinationService> providers;
-	
+	private List<DestinationService> providers;
+
 	private static Map<DestinationType, DestinationService> destinationServiceMap = new HashMap<>();
-	
+
 	@PostConstruct
 	void started() {
-		for(DestinationService provider : providers) {
+		for (DestinationService provider : providers) {
 			destinationServiceMap.put(provider.getType(), provider);
-        }
+		}
 	}
-	
+
 	public static DestinationService getDestinationService(DestinationType providerName) {
 		DestinationService destinationService = destinationServiceMap.get(providerName);
-		if(destinationService == null) {
+		if (destinationService == null) {
 			throw new DestinationServiceNotFound(providerName);
 		}
 		return destinationService;
