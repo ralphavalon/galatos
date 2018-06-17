@@ -23,33 +23,34 @@ import galatos.notification.request.NotificationRequest;
 
 @Component
 public class RabbitMQListener {
-	
-	@Autowired
-	private ObjectMapper mapper;
-	
-	@Autowired
-	@Qualifier("requestValidator")
-	private Validator requestValidator;
 
-	@RabbitListener(bindings=@QueueBinding(
-			key = "${galatos.rabbitmq.key}",
-			exchange = @Exchange(durable = "${galatos.rabbitmq.exchange.durable}",
-								type = "${galatos.rabbitmq.exchange.type}",
-						 		value = "${galatos.rabbitmq.exchange.value}"),
-			value = @Queue(value = "${galatos.rabbitmq.queue.value}",
-						durable = "${galatos.rabbitmq.queue.durable}")))
-	public void onMessage(String message) throws JsonParseException, JsonMappingException, IOException {
-		NotificationRequest notificationRequest = mapper.readValue(message, NotificationRequest.class);
-		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(notificationRequest, NotificationRequest.class.getSimpleName());
-		requestValidator.validate(notificationRequest, errors);
-		if(errors.hasErrors()) {
-			throw new RuntimeException();
-		}
-		
-		List<DestinationRequest> destinationRequests = notificationRequest.getDestinationRequests();
-		destinationRequests.parallelStream()
-			.forEach(destinationRequest -> DestinationServiceFactory.getDestinationService(
-					destinationRequest.getType()).notify(notificationRequest));
-		
-	}
+    @Autowired
+    private ObjectMapper mapper;
+
+    @Autowired
+    @Qualifier("requestValidator")
+    private Validator requestValidator;
+
+    @RabbitListener(bindings = @QueueBinding(
+            key = "${galatos.rabbitmq.key}",
+            exchange = @Exchange(durable = "${galatos.rabbitmq.exchange.durable}",
+                    type = "${galatos.rabbitmq.exchange.type}",
+                    value = "${galatos.rabbitmq.exchange.value}"),
+            value = @Queue(value = "${galatos.rabbitmq.queue.value}",
+                    durable = "${galatos.rabbitmq.queue.durable}")))
+    public void onMessage(String message) throws JsonParseException, JsonMappingException, IOException {
+        NotificationRequest notificationRequest = mapper.readValue(message, NotificationRequest.class);
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(notificationRequest,
+                NotificationRequest.class.getSimpleName());
+        requestValidator.validate(notificationRequest, errors);
+        if (errors.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        List<DestinationRequest> destinationRequests = notificationRequest.getDestinationRequests();
+        destinationRequests.parallelStream()
+                .forEach(destinationRequest -> DestinationServiceFactory.getDestinationService(
+                        destinationRequest.getType()).notify(notificationRequest));
+
+    }
 }

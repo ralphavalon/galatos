@@ -8,14 +8,14 @@ import galatos.notification.request.NotificationRequestValidator;
 
 @SpringBootApplication
 public class GalatosApplication {
-	
-	public static void main(String[] args) {
-		SpringApplication.run(GalatosApplication.class, args);
-	}
-	
-	@Bean
-	public NotificationRequestValidator requestValidator() {
-		return new NotificationRequestValidator();
-	}
-	
+
+    public static void main(String[] args) {
+        SpringApplication.run(GalatosApplication.class, args);
+    }
+
+    @Bean
+    public NotificationRequestValidator requestValidator() {
+        return new NotificationRequestValidator();
+    }
+
 }

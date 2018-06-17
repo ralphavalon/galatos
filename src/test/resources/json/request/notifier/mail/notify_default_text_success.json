@@ -1,0 +1,12 @@
+{
+	"from": "from@mailinator.com",
+	"replyTo": null,
+	"to": [
+		"to@mailinator.com"
+	],
+	"cc": null,
+	"bcc": null,
+	"sentDate": null,
+	"subject": null,
+	"text": "my default text"
+}

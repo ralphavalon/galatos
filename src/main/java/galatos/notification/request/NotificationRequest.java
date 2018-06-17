@@ -12,6 +12,7 @@ import org.apache.commons.lang3.ClassUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import galatos.notification.destination.DestinationRequest;
+import galatos.notification.destination.mail.MailRequest;
 import galatos.notification.destination.slack.SlackRequest;
 import galatos.notification.validation.AtLeastOneNotNull;
 import galatos.notification.validation.FieldHelper;
@@ -20,23 +21,28 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter @NoArgsConstructor @AllArgsConstructor @Builder
-@AtLeastOneNotNull(fields= {"slack"})
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@AtLeastOneNotNull(fields = { "slack", "mail" })
 public class NotificationRequest {
-	
-	private String text;
-	@Valid
-	private SlackRequest slack;
-	
-	@JsonIgnore
-	public List<DestinationRequest> getDestinationRequests() {
-		List<Field> fields = Arrays.asList(this.getClass().getDeclaredFields());
-		
-		return fields.stream()
-			.filter(field -> ClassUtils.isAssignable(field.getType(), DestinationRequest.class)
-				&& FieldHelper.getField(field, this) != null)
-			.map(field -> (DestinationRequest) FieldHelper.getField(field, this))
-			.collect(Collectors.toList());
-	}
-	
+
+    private String text;
+    @Valid
+    private SlackRequest slack;
+    @Valid
+    private MailRequest mail;
+
+    @JsonIgnore
+    public List<DestinationRequest> getDestinationRequests() {
+        List<Field> fields = Arrays.asList(this.getClass().getDeclaredFields());
+
+        return fields.stream()
+                .filter(field -> ClassUtils.isAssignable(field.getType(), DestinationRequest.class)
+                        && FieldHelper.getField(field, this) != null)
+                .map(field -> (DestinationRequest) FieldHelper.getField(field, this))
+                .collect(Collectors.toList());
+    }
+
 }

@@ -7,11 +7,21 @@ spring:
 
 galatos:
   rabbitmq:
-    key: payments.created
+    key: galatos.messaging
     exchange:
       durable: true
       type: topic
-      value: payments
+      value: galatos
     queue:
-      value: payments.created
+      value: galatos.messaging
       durable: true
+      
+spring.mail.host: smtp.gmail.com
+spring.mail.port: 465
+spring.mail.username: email
+spring.mail.password: pass
+spring.mail.properties.mail.smtp.auth: true
+spring.mail.properties.mail.smtp.starttls.enable: true
+spring.mail.properties.mail.smtp.starttls.required: true
+spring.mail.properties.mail.smtp.ssl.enable: true
+spring.mail.test-connection: true
